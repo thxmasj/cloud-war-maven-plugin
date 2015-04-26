@@ -41,6 +41,8 @@ import java.util.Set;
 )
 public class ExecutableWarMojo extends WarMojo {
 
+    public enum Engine {tomcat, jetty}
+
     @Component( role = ArchiverManager.class )
     private ArchiverManager archiverManager;
 
@@ -62,6 +64,9 @@ public class ExecutableWarMojo extends WarMojo {
     @Parameter(defaultValue = "${project.remoteRepositories}")
     private List<ArtifactRepository> remoteRepositories;
 
+    @Parameter(defaultValue = "tomcat")
+    private Engine engine;
+
     @Override
     public void buildWebapp( MavenProject mavenProject, File webapplicationDirectory )
             throws MojoExecutionException, MojoFailureException, IOException {
@@ -76,7 +81,9 @@ public class ExecutableWarMojo extends WarMojo {
             Manifest manifest = new Manifest();
             Manifest.Attribute mainClassAttribute = new Manifest.Attribute(
                     "Main-Class",
-                    "it.thomasjohansen.launcher.TomcatLauncher"
+                    engine == Engine.tomcat ?
+                            "it.thomasjohansen.launcher.TomcatLauncher"
+                            : "it.thomasjohansen.launcher.JettyLauncher"
             );
         try {
             manifest.addConfiguredAttribute(mainClassAttribute);
@@ -89,7 +96,7 @@ public class ExecutableWarMojo extends WarMojo {
     private Set findLauncherArtifacts() throws MojoExecutionException {
         Artifact tomcatLauncherArtifact = artifactFactory.createArtifact(
                 "it.thomasjohansen.launcher",
-                "tomcat-launcher",
+                engine + "-launcher",
                 "1.0-SNAPSHOT",
                 "",
                 "jar"
