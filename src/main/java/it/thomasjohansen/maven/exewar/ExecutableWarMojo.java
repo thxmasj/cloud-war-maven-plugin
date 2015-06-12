@@ -10,7 +10,6 @@ import org.apache.maven.artifact.resolver.ArtifactResolver;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.plugin.war.WarMojo;
-import org.apache.maven.plugins.annotations.Component;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
@@ -25,6 +24,7 @@ import org.codehaus.plexus.archiver.jar.ManifestException;
 import org.codehaus.plexus.archiver.manager.ArchiverManager;
 import org.codehaus.plexus.archiver.manager.NoSuchArchiverException;
 
+import javax.inject.Inject;
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
@@ -43,19 +43,19 @@ public class ExecutableWarMojo extends WarMojo {
 
     public enum Engine {tomcat, jetty}
 
-    @Component( role = ArchiverManager.class )
+    @Inject
     private ArchiverManager archiverManager;
 
-    @Component(role = ArtifactFactory.class)
+    @Inject
     private ArtifactFactory artifactFactory;
 
-    @Component(role = ArtifactResolver.class)
+    @Inject
     private ArtifactResolver artifactResolver;
 
-    @Component(role = MavenProjectBuilder.class)
+    @Inject
     private MavenProjectBuilder mavenProjectBuilder;
 
-    @Component(role = ArtifactMetadataSource.class)
+    @Inject
     private ArtifactMetadataSource artifactMetadataSource;
 
     @Parameter(defaultValue = "${project.localRepository}")
