@@ -10,12 +10,17 @@ import org.apache.maven.artifact.resolver.ArtifactResolver;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.war.WarMojo;
 import org.apache.maven.plugins.annotations.Component;
+import org.apache.maven.plugins.annotations.LifecyclePhase;
+import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.project.MavenProject;
 import org.apache.maven.project.MavenProjectBuilder;
 import org.apache.maven.project.ProjectBuildingException;
 import org.apache.maven.project.artifact.InvalidDependencyVersionException;
 
+import javax.inject.Inject;
+import java.io.File;
+import java.io.IOException;
 import java.util.List;
 import java.util.Set;
 
@@ -27,15 +32,19 @@ public abstract class ExecutableWarMojo extends WarMojo {
     public enum Engine {tomcat, jetty}
 
     @Component(role = ArtifactFactory.class)
+    @Inject
+    private ArchiverManager archiverManager;
+
+    @Inject
     private ArtifactFactory artifactFactory;
 
-    @Component(role = ArtifactResolver.class)
+    @Inject
     private ArtifactResolver artifactResolver;
 
-    @Component(role = MavenProjectBuilder.class)
-    protected MavenProjectBuilder mavenProjectBuilder;
+    @Inject
+    private MavenProjectBuilder mavenProjectBuilder;
 
-    @Component(role = ArtifactMetadataSource.class)
+    @Inject
     private ArtifactMetadataSource artifactMetadataSource;
 
     @Parameter(defaultValue = "${project.localRepository}")
