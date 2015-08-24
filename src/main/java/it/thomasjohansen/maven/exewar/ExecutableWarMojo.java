@@ -9,29 +9,24 @@ import org.apache.maven.artifact.resolver.ArtifactResolutionException;
 import org.apache.maven.artifact.resolver.ArtifactResolver;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.war.WarMojo;
-import org.apache.maven.plugins.annotations.Component;
-import org.apache.maven.plugins.annotations.LifecyclePhase;
-import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.project.MavenProject;
 import org.apache.maven.project.MavenProjectBuilder;
 import org.apache.maven.project.ProjectBuildingException;
 import org.apache.maven.project.artifact.InvalidDependencyVersionException;
+import org.codehaus.plexus.archiver.manager.ArchiverManager;
 
 import javax.inject.Inject;
-import java.io.File;
-import java.io.IOException;
 import java.util.List;
 import java.util.Set;
 
 /**
  * @author thomas@thomasjohansen.it
  */
-public abstract class ExecutableWarMojo extends WarMojo {
+public class ExecutableWarMojo extends WarMojo {
 
     public enum Engine {tomcat, jetty}
 
-    @Component(role = ArtifactFactory.class)
     @Inject
     private ArchiverManager archiverManager;
 
@@ -72,10 +67,11 @@ public abstract class ExecutableWarMojo extends WarMojo {
         Artifact tomcatLauncherArtifact = artifactFactory.createArtifact(
                 "it.thomasjohansen.launcher",
                 engine + "-launcher",
-                "1.2",
+                "1.3",
                 "",
                 "jar"
         );
+
         try {
             MavenProject project = mavenProjectBuilder.buildFromRepository(tomcatLauncherArtifact, remoteRepositories, localRepository);
             Set<Artifact> artifacts = project.createArtifacts(artifactFactory, null, null);
@@ -83,24 +79,8 @@ public abstract class ExecutableWarMojo extends WarMojo {
             for (Artifact artifact : artifacts)
                 resolveArtifact(artifact);
             return artifacts;
-//            ArtifactResolutionResult resolutionResult = artifactResolver.resolveTransitively(
-//                    artifacts,
-//                    tomcatLauncherPom,
-//                    project.getManagedVersionMap(),
-//                    localRepository,
-//                    remoteRepositories,
-//                    artifactMetadataSource,
-//                    null
-//            );
-//            return resolutionResult.getArtifacts();
-        } catch (ProjectBuildingException e) {
+        } catch (ProjectBuildingException | InvalidDependencyVersionException e) {
             throw new MojoExecutionException(e.getMessage(), e);
-        } catch (InvalidDependencyVersionException e) {
-            throw new MojoExecutionException(e.getMessage(), e);
-//        } catch (ArtifactNotFoundException e) {
-//            throw new MojoExecutionException(e.getMessage(), e);
-//        } catch (ArtifactResolutionException e) {
-//            throw new MojoExecutionException(e.getMessage(), e);
         }
     }
 
