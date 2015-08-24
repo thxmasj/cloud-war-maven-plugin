@@ -20,8 +20,17 @@ Replace the standard maven-war-plugin with this plugin in the POM. It supports t
   <groupId>it.thomasjohansen.maven</groupId>
   <artifactId>cloud-war-maven-plugin</artifactId>
   <version>1.0</version>
+  <extensions>true</extensions>
   <configuration>
-    <engine>jetty</engine> <!-- "tomcat" is the default -->
+    <!-- Default engine is "tomcat", but "jetty" is supported as well -->
+    <engine>tomcat</engine>
+    <!-- Default port is 8081 -->
+    <port>8081</port>
+    <contextPath>/</contextPath>
+    <!-- This enables TLS and uses private key from specified resource path -->
+    <keyStorePath>/tls.jks</keyStorePath>
+    <!-- This plug-in extends maven-war-plugin, so it's configuration is supported as well -->
+    <failOnMissingWebXml>false</failOnMissingWebXml>
   </configuration>
 </plugin>
 ```
