@@ -1,8 +1,9 @@
-package it.thomasjohansen.maven.exewar;
+package it.thomasjohansen.maven.cloudwar;
 
 import it.thomasjohansen.launcher.web.Launcher;
 import it.thomasjohansen.launcher.web.LauncherConfiguration;
 import org.apache.maven.plugin.MojoExecutionException;
+import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
@@ -25,7 +26,7 @@ import java.net.URLClassLoader;
         requiresDependencyResolution = ResolutionScope.RUNTIME
 )
 @SuppressWarnings("unused")
-public class ExecuteMojo extends ExecutableWarMojo {
+public class ExecuteMojo extends CloudWarMojo {
 
     @Parameter(defaultValue = "${project.build.directory}", required = true )
     @SuppressWarnings("unused")
@@ -35,7 +36,8 @@ public class ExecuteMojo extends ExecutableWarMojo {
     private String finalName;
 
     @Override
-    public void execute() throws MojoExecutionException {
+    public void execute() throws MojoExecutionException, MojoFailureException {
+        super.execute();
         try {
             ClassLoader classLoader = createClassLoader();
             Class<?> launcherClass = Class.forName(engine == Engine.tomcat ? tomcatClassName : jettyClassName, true, classLoader);
@@ -64,12 +66,12 @@ public class ExecuteMojo extends ExecutableWarMojo {
 
     private LauncherConfiguration createLauncherConfiguration(ClassLoader classLoader) {
         LauncherConfiguration.Builder builder = LauncherConfiguration.builder()
-                .addApplication("/", buildDirectory + "/" + finalName)
+                .application("/", buildDirectory + "/" + finalName)
                 .classLoader(classLoader);
         if (keyStorePath != null)
-            builder.addSecureConnector(port, keyStorePath, "changeit");
+            builder.secureConnector(port, keyStorePath, "changeit");
         else
-            builder.addConnector(port);
+            builder.connector(port);
         return builder.build();
     }
 
