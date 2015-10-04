@@ -1,23 +1,17 @@
-# cloud-war-maven-plugin
+# Enhanced WAR Maven Plugin
 
-A Maven plug-in for creating Java WAR files ready for cloud infrastructure. Features are:
+A Maven plug-in for creating Java WAR files featuring a set of enhancements over standard WAR files:
 
-* Easy deployment: `java -jar myapp.war`
-* Cluster-ready: HTTP session replication with auto-discovered cluster members.
-* Modern TLS-support: Out-of-the-box secure HTTPS just by including a keystore.
-* Convention over configuration for easy set-up.
+* Easy deployment by using an embedded web container: `java -jar myapp.war`
+* Cluster-ready: HTTP session replication across a cluster of auto-discovered member nodes.
+* Out-of-the-box secure HTTPS simply by including a JKS or PKCS#12 key store.
+* Easy set-up by following the «convention over configuration» principle.
 
-It works by replacing the standard maven-war-plugin in the build cycle and creates a WAR file with a bundled web container and a manifested main class that starts it. The WAR can then be executed like a normal executable JAR like this
-
-`java -jar my-executable-war.war`
-
-while it also can be deployed to a container like normal WAR files.
-
-Both Tomcat and Jetty are options for the bundled container.
+Just include the plugin in pom.xml and it will replace the standard plugin in the packaging phase. Declaratively select the enhancement features you want in the plugin´s configuration.
 
 # Usage
 
-Replace the standard maven-war-plugin with this plugin in the POM. It supports the same settings as the maven-war-plugin, with additional properties shown below.
+Include this plugin in pom.xml. As it is an extension of the default plugin it also supports the standard settings in addition to the settings for the enhancement features.
 
 ```
 <plugin>
