@@ -7,13 +7,12 @@ A Maven plug-in for creating Java WAR files featuring a set of enhancements over
 * Out-of-the-box secure HTTPS simply by including a JKS or PKCS#12 key store.
 * Easy set-up by following the «convention over configuration» principle.
 
-Just include the plugin in pom.xml and it will replace the standard plugin in the packaging phase.
+Just include the plugin in pom.xml and it will 
 Declaratively select the enhancement features you want in the plugin´s configuration.
 
 # Usage
 
-Include this plugin in pom.xml. As it is an extension of the default plugin it also supports the standard settings in
-addition to the settings for the enhancement features.
+Include this plugin in pom.xml to replace the standard maven-war-plugin in the packaging phase. It extends the standard plugin and therefore supports all the standard plug-in's configuration in addition to configuration for enhancing the packaged WAR.
 
 ```
 <plugin>
