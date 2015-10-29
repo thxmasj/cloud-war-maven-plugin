@@ -1,4 +1,4 @@
-# Enhanced WAR Maven Plugin
+# WAR Buddy
 
 A Maven plug-in for creating Java WAR files featuring a set of enhancements over standard WAR files:
 
