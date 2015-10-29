@@ -13,7 +13,7 @@ Declaratively select the enhancement features you want in the plugin´s configur
 # Usage
 
 Include this plugin in pom.xml. As it is an extension of the default plugin it also supports the standard settings in
-addition to the settings for the enhancement features.
+addition to the settings for the enhancement features...
 
 ```
 <plugin>
