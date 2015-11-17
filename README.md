@@ -1,19 +1,18 @@
-# cloud-war-maven-plugin
+# WAR Buddy
 
-A Maven plug-in for creating Java WAR files fit for the cloud. Currently it features creating self-contained,
-executable WARs. It works by replacing the standard maven-war-plugin in the build cycle
-and creates a WAR file with a bundled web container and a manifested main class that starts it. The WAR
-can then be executed like a normal executable JAR like this
+A Maven plug-in for creating Java WAR files featuring a set of enhancements over standard WAR files:
 
-`java -jar my-executable-war.war`
+* Easy deployment by using an embedded web container: `java -jar myapp.war`
+* Cluster-ready: HTTP session replication across a cluster of auto-discovered member nodes.
+* Out-of-the-box secure HTTPS simply by including a JKS or PKCS#12 key store.
+* Easy set-up by following the «convention over configuration» principle.
 
-while it also can be deployed to a container like normal WAR files.
-
-Currently Tomcat and Jetty are options for the bundled container.
+Just include the plugin in pom.xml and it will 
+Declaratively select the enhancement features you want in the plugin´s configuration.
 
 # Usage
 
-Replace the standard maven-war-plugin with this plugin in the POM. It supports the same settings as the maven-war-plugin, with additional properties shown below.
+Include this plugin in pom.xml to replace the standard maven-war-plugin in the packaging phase. It extends the standard plugin and therefore supports all the standard plug-in's configuration in addition to configuration for enhancing the packaged WAR.
 
 ```
 <plugin>
