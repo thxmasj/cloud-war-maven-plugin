@@ -18,6 +18,7 @@
     <modules>
         <module>cluster-session-web-fragment</module>
         <module>maven-plugin</module>
+        <module>saml-web-fragment</module>
     </modules>
 
 </project>
