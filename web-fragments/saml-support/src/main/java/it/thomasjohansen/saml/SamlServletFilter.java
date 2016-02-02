@@ -1,11 +1,5 @@
 package it.thomasjohansen.saml;
 
-import org.apache.cxf.jaxrs.impl.HttpHeadersImpl;
-import org.apache.cxf.message.Message;
-import org.apache.cxf.rs.security.saml.sso.SSOConstants;
-import org.apache.cxf.rs.security.saml.sso.state.ResponseState;
-import org.apache.cxf.staxutils.StaxUtils;
-import org.apache.wss4j.common.saml.SamlAssertionWrapper;
 import org.opensaml.saml.saml2.core.AuthnRequest;
 
 import javax.servlet.Filter;
@@ -15,11 +9,7 @@ import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletResponse;
-import javax.ws.rs.core.Cookie;
-import javax.ws.rs.core.HttpHeaders;
 import java.io.IOException;
-import java.io.StringReader;
-import java.util.Map;
 
 /**
  * @author thomas@thomasjohansen.it
@@ -41,10 +31,13 @@ public class SamlServletFilter implements Filter {
             chain.doFilter(request, response);
             return;
         }
-        AuthnRequest authnRequest = createAuthnRequest();
+        String samlRequest = AuthenticationRequest.builder()
+                .assertionConsumerAddress(assertionConsumerAddress)
+                .issuer(issuerId)
+                .build().toXML();
         // QueryParam SAMLRequest = base64Encode(toString(authnRequest));
         // QueryParam RelayState =
-        redirectToIdentityProvider(response);
+        redirectToIdentityProvider(response, samlRequest);
     }
 
     private boolean inSecurityContext(ServletRequest request) {
@@ -55,9 +48,9 @@ public class SamlServletFilter implements Filter {
         return null;
     }
 
-    private void redirectToIdentityProvider(ServletResponse servletResponse) throws IOException {
+    private void redirectToIdentityProvider(ServletResponse servletResponse, String samlRequest) throws IOException {
         HttpServletResponse response = (HttpServletResponse)servletResponse;
-        response.sendRedirect(identityProviderAddress);
+        response.sendRedirect(identityProviderAddress + "?SAMLRequest=" + samlRequest);
     }
 
     @Override

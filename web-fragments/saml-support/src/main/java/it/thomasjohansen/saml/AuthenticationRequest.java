@@ -9,13 +9,16 @@ import org.opensaml.saml.saml2.core.AuthnContextClassRef;
 import org.opensaml.saml.saml2.core.AuthnContextComparisonTypeEnumeration;
 import org.opensaml.saml.saml2.core.AuthnRequest;
 import org.opensaml.saml.saml2.core.RequestedAuthnContext;
-import org.w3c.dom.Document;
-import org.w3c.dom.DocumentFragment;
 import org.w3c.dom.Element;
 
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.OutputKeys;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerException;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamResult;
+import java.io.StringWriter;
+import java.io.Writer;
 import java.util.UUID;
 
 /**
@@ -27,24 +30,28 @@ public class AuthenticationRequest {
     enum ProtocolBinding {HTTP_Post, Redirect}
 
     private AuthenticationRequest() {
-        // Used by builder
+        // Instantiated by builder only
     }
 
     public String toXML() {
         try {
-            DocumentBuilder documentBuilder =
-                    DocumentBuilderFactory.newInstance().newDocumentBuilder();
-            Document document = documentBuilder.newDocument();
             Marshaller marshaller =
                     XMLObjectProviderRegistrySupport.getMarshallerFactory().getMarshaller(request);
+            if (marshaller == null)
+                throw new RuntimeException("Failed to marshal to XML: No marshaller found for " + request.getClass());
             Element element = marshaller.marshall(request);
-            return document.toString();
-        } catch (ParserConfigurationException|MarshallingException e) {
-            throw new RuntimeException("Failed to create XML", e);
+            Transformer transformer = TransformerFactory.newInstance().newTransformer();
+            transformer.setOutputProperty(OutputKeys.ENCODING, "UTF-8");
+            transformer.setOutputProperty(OutputKeys.INDENT, "yes");
+            Writer out = new StringWriter();
+            transformer.transform(new DOMSource(element), new StreamResult(out));
+            return out.toString();
+        } catch (MarshallingException | TransformerException e) {
+            throw new RuntimeException("Failed to marshal to XML", e);
         }
     }
 
-    public Builder builder() {
+    public static Builder builder() {
         return new Builder(new AuthenticationRequest());
     }
 

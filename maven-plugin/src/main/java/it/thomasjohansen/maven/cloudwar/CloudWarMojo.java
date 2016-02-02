@@ -75,8 +75,11 @@ public class CloudWarMojo extends WarMojo {
     @Parameter(required = false)
     protected String keyStorePath;
 
-    @Parameter(defaultValue = "true")
-    private boolean enableCluster = true;
+    @Parameter(defaultValue = "false")
+    private boolean enableCluster = false;
+
+    @Parameter(defaultValue = "false")
+    private boolean enableSingleSignOn = false;
 
     protected static final String tomcatClassName = "it.thomasjohansen.launcher.web.tomcat.TomcatLauncher";
     protected static final String jettyClassName = "it.thomasjohansen.launcher.web.jetty.JettyLauncher";
@@ -91,6 +94,8 @@ public class CloudWarMojo extends WarMojo {
         if (enableCluster) {
             addClusterSessionFragment(webapplicationDirectory);
         }
+        if (enableSingleSignOn)
+            addSingleSignOnFragment(webapplicationDirectory);
         addManifest();
     }
 
@@ -100,6 +105,25 @@ public class CloudWarMojo extends WarMojo {
             Files.createDirectories(targetDir);
         try {
             for (Artifact artifact : findClusterArtifacts()) {
+                Path source = Paths.get(artifact.getFile().getPath());
+                Path target = Paths.get(targetDir.toString(), artifact.getFile().getName());
+                Files.copy(
+                        source,
+                        target,
+                        StandardCopyOption.REPLACE_EXISTING
+                );
+            }
+        } catch (ProjectBuildingException|InvalidDependencyVersionException e) {
+            throw new MojoExecutionException("Failed to add fragment", e);
+        }
+    }
+
+    private void addSingleSignOnFragment(File root) throws MojoExecutionException, IOException {
+        Path targetDir = Paths.get(root.getPath(), "WEB-INF", "lib");
+        if (!targetDir.toFile().exists())
+            Files.createDirectories(targetDir);
+        try {
+            for (Artifact artifact : findSingleSignOnArtifacts()) {
                 Path source = Paths.get(artifact.getFile().getPath());
                 Path target = Paths.get(targetDir.toString(), artifact.getFile().getName());
                 Files.copy(
@@ -162,8 +186,19 @@ public class CloudWarMojo extends WarMojo {
 
     private Set<Artifact> findClusterArtifacts() throws ProjectBuildingException, InvalidDependencyVersionException, MojoExecutionException {
         Artifact clusterArtifact = artifactFactory.createArtifact(
+                "it.thomasjohansen.warbuddy",
+                "cluster-support",
+                "1.0-SNAPSHOT",
+                "",
+                "jar"
+        );
+        return findArtifacts(clusterArtifact);
+    }
+
+    private Set<Artifact> findSingleSignOnArtifacts() throws ProjectBuildingException, InvalidDependencyVersionException, MojoExecutionException {
+        Artifact clusterArtifact = artifactFactory.createArtifact(
                 "it.thomasjohansen.maven",
-                "cluster-session-web-fragment",
+                "saml-web-fragment",
                 "1.1-SNAPSHOT",
                 "",
                 "jar"

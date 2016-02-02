@@ -1,5 +1,7 @@
 package it.thomasjohansen.saml;
 
+import org.opensaml.core.config.InitializationException;
+import org.opensaml.core.config.InitializationService;
 import org.opensaml.core.xml.XMLObjectBuilderFactory;
 import org.opensaml.core.xml.config.XMLObjectProviderRegistrySupport;
 import org.opensaml.saml.common.SAMLObjectBuilder;
@@ -13,6 +15,14 @@ import org.opensaml.saml.saml2.core.RequestedAuthnContext;
  * @author thomas@thomasjohansen.it
  */
 public class OpenSamlBuilders {
+
+    static {
+        try {
+            InitializationService.initialize();
+        } catch (InitializationException e) {
+            e.printStackTrace();
+        }
+    }
 
     private static volatile XMLObjectBuilderFactory builderFactory =
             XMLObjectProviderRegistrySupport.getBuilderFactory();

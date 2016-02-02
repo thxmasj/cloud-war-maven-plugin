@@ -24,7 +24,7 @@
                         org.apache.maven.plugins:maven-surefire-plugin:2.12.4:test
                     </test>
                     <package>
-                        it.thomasjohansen.maven:cloud-war-maven-plugin:${project.version}:war
+                        it.thomasjohansen.warbuddy:war-buddy-maven-plugin:1.0-SNAPSHOT:war
                     </package>
                     <install>
                         org.apache.maven.plugins:maven-install-plugin:2.4:install

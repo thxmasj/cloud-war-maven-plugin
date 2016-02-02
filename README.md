@@ -17,15 +17,16 @@ addition to the settings for the enhancement features...
 
 ```
 <plugin>
-  <groupId>it.thomasjohansen.maven</groupId>
-  <artifactId>cloud-war-maven-plugin</artifactId>
+  <groupId>it.thomasjohansen.warbuddy</groupId>
+  <artifactId>war-buddy-maven-plugin</artifactId>
   <version>1.0</version>
   <extensions>true</extensions>
   <configuration>
     <!-- Default engine is "tomcat", but "jetty" is supported as well -->
     <engine>tomcat</engine>
-    <!-- Default port is 8081 -->
+    <!-- Default port is 8080 -->
     <port>8081</port>
+    <!-- Default context path is / -->
     <contextPath>/</contextPath>
     <!-- This enables TLS and uses private key from specified resource path -->
     <keyStorePath>/tls.jks</keyStorePath>
