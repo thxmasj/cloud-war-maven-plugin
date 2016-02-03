@@ -15,7 +15,7 @@ Declaratively select the enhancement features you want in the plugin´s configur
 Include this plugin in pom.xml. As it is an extension of the default plugin it also supports the standard settings in
 addition to the settings for the enhancement features...
 
-```
+```xml
 <plugin>
   <groupId>it.thomasjohansen.warbuddy</groupId>
   <artifactId>war-buddy-maven-plugin</artifactId>
