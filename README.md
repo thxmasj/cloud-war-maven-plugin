@@ -5,6 +5,7 @@ A Maven plug-in for creating Java WAR files featuring a set of enhancements over
 * Easy deployment by using an embedded web container: `java -jar myapp.war`
 * Cluster-ready: HTTP session replication across a cluster of auto-discovered member nodes.
 * Out-of-the-box secure HTTPS simply by including a JKS or PKCS#12 key store.
+* Authentication through SAML 2's Web Browser SSO Profile.
 * Easy set-up by following the «convention over configuration» principle.
 
 Just include the plugin in pom.xml and it will replace the standard plugin in the packaging phase.
