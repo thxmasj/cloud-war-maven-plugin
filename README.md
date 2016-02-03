@@ -22,15 +22,10 @@ addition to the settings for the enhancement features...
   <version>1.0</version>
   <extensions>true</extensions>
   <configuration>
-    <!-- Default engine is "tomcat", but "jetty" is supported as well -->
     <engine>tomcat</engine>
-    <!-- Default port is 8080 -->
-    <port>8081</port>
-    <!-- Default context path is / -->
+    <port>8080</port>
     <contextPath>/</contextPath>
-    <!-- This enables TLS and uses private key from specified resource path -->
     <keyStorePath>/tls.jks</keyStorePath>
-    <!-- This plug-in extends maven-war-plugin, so it's configuration is supported as well -->
     <failOnMissingWebXml>false</failOnMissingWebXml>
   </configuration>
 </plugin>
