@@ -7,6 +7,7 @@ A Maven plug-in for creating Java WAR files featuring a set of enhancements over
 * Out-of-the-box secure HTTPS simply by including a JKS or PKCS#12 key store.
 * Authentication through SAML 2's Web Browser SSO Profile.
 * Easy set-up by following the «convention over configuration» principle.
+* The web application can be deployed directly from source by using the war-buddy:execute Maven goal.
 
 Just include the plugin in pom.xml and it will replace the standard plugin in the packaging phase.
 Declaratively select the enhancement features you want in the plugin´s configuration.
