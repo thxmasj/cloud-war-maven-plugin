@@ -38,7 +38,7 @@ import java.util.Set;
 /**
  * @author thomas@thomasjohansen.it
  */
-public class CloudWarMojo extends WarMojo {
+public class WarBuddyMojo extends WarMojo {
 
     public enum Engine {tomcat, jetty}
 
@@ -81,8 +81,8 @@ public class CloudWarMojo extends WarMojo {
     @Parameter(defaultValue = "false")
     private boolean enableSingleSignOn = false;
 
-    protected static final String tomcatClassName = "it.thomasjohansen.launcher.web.tomcat.TomcatLauncher";
-    protected static final String jettyClassName = "it.thomasjohansen.launcher.web.jetty.JettyLauncher";
+    protected static final String tomcatClassName = "it.thomasjohansen.weblauncher.tomcat.TomcatLauncher";
+    protected static final String jettyClassName = "it.thomasjohansen.weblauncher.jetty.JettyLauncher";
 
     @Override
     public void buildWebapp( MavenProject mavenProject, File webapplicationDirectory )
@@ -175,9 +175,9 @@ public class CloudWarMojo extends WarMojo {
 
     private Set<Artifact> findEngineArtifacts() throws MojoExecutionException {
         Artifact launcherArtifact = artifactFactory.createArtifact(
-                "it.thomasjohansen.launcher",
-                engine + "-launcher",
-                "1.4-SNAPSHOT",
+                "it.thomasjohansen.weblauncher",
+                engine + "-web-launcher",
+                "1.0-SNAPSHOT",
                 "",
                 "jar"
         );

@@ -26,7 +26,7 @@ import java.net.URLClassLoader;
         requiresDependencyResolution = ResolutionScope.RUNTIME
 )
 @SuppressWarnings("unused")
-public class ExecuteMojo extends CloudWarMojo {
+public class ExecuteMojo extends WarBuddyMojo {
 
     @Parameter(defaultValue = "${project.build.directory}", required = true )
     @SuppressWarnings("unused")

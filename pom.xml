@@ -13,13 +13,13 @@
     <parent>
         <groupId>it.thomasjohansen</groupId>
         <artifactId>oss-parent</artifactId>
-        <version>1.0</version>
+        <version>1.1</version>
     </parent>
 
     <modules>
         <module>maven-plugin</module>
         <module>web-fragments</module>
-        <module>demo</module>
+<!--        <module>demo</module>  -->
     </modules>
 
     <dependencyManagement>
