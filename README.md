@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/thxmasj/war-buddy.svg?branch=master)](https://travis-ci.org/thxmasj/war-buddy)
+
 # WAR Buddy
 
 A Maven plug-in for creating Java WAR files featuring a set of enhancements over standard WAR files:
