@@ -177,7 +177,7 @@ public class WarBuddyMojo extends WarMojo {
         Artifact launcherArtifact = artifactFactory.createArtifact(
                 "it.thomasjohansen.weblauncher",
                 engine + "-web-launcher",
-                "1.0-SNAPSHOT",
+                "1.0-RC1",
                 "",
                 "jar"
         );
@@ -197,9 +197,9 @@ public class WarBuddyMojo extends WarMojo {
 
     private Set<Artifact> findSingleSignOnArtifacts() throws ProjectBuildingException, InvalidDependencyVersionException, MojoExecutionException {
         Artifact clusterArtifact = artifactFactory.createArtifact(
-                "it.thomasjohansen.maven",
+                "it.thomasjohansen.warbuddy",
                 "saml-web-fragment",
-                "1.1-SNAPSHOT",
+                "1.0-SNAPSHOT",
                 "",
                 "jar"
         );

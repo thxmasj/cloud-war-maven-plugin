@@ -1,7 +1,7 @@
 package it.thomasjohansen.maven.cloudwar;
 
-import it.thomasjohansen.launcher.web.Launcher;
-import it.thomasjohansen.launcher.web.LauncherConfiguration;
+import it.thomasjohansen.weblauncher.Launcher;
+import it.thomasjohansen.weblauncher.LauncherConfiguration;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
