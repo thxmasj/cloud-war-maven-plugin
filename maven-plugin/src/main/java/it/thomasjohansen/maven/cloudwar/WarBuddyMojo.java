@@ -176,7 +176,7 @@ public class WarBuddyMojo extends WarMojo {
     private Set<Artifact> findEngineArtifacts() throws MojoExecutionException {
         Artifact launcherArtifact = artifactFactory.createArtifact(
                 "it.thomasjohansen.weblauncher",
-                engine + "-web-launcher",
+                engine + "-launcher",
                 "1.0-RC1",
                 "",
                 "jar"

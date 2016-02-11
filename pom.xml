@@ -19,7 +19,7 @@
     <modules>
         <module>maven-plugin</module>
         <module>web-fragments</module>
-<!--        <module>demo</module>  -->
+        <module>demo</module>
     </modules>
 
     <dependencyManagement>
