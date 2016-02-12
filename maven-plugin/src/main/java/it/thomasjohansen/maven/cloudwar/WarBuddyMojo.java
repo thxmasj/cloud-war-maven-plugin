@@ -26,12 +26,10 @@ import org.codehaus.plexus.archiver.manager.NoSuchArchiverException;
 import javax.inject.Inject;
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.CopyOption;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -57,10 +55,17 @@ public class WarBuddyMojo extends WarMojo {
     @Inject
     private ArtifactMetadataSource artifactMetadataSource;
 
-    @Parameter(defaultValue = "${project.localRepository}")
+    @Parameter(
+            defaultValue = "${localRepository}",
+            readonly = true
+    )
     private ArtifactRepository localRepository;
 
-    @Parameter(defaultValue = "${project.remoteRepositories}")
+    @Parameter(
+            defaultValue = "${project.remoteArtifactRepositories}",
+            readonly = true,
+            required = true
+    )
     private List<ArtifactRepository> remoteRepositories;
 
     @Parameter(defaultValue = "tomcat")
