@@ -38,6 +38,7 @@ import java.util.Set;
  */
 public class WarBuddyMojo extends WarMojo {
 
+    private static final String projectVersion = "1.0-RC1";
     public enum Engine {tomcat, jetty}
 
     @Inject
@@ -193,7 +194,7 @@ public class WarBuddyMojo extends WarMojo {
         Artifact clusterArtifact = artifactFactory.createArtifact(
                 "it.thomasjohansen.warbuddy",
                 "cluster-support",
-                "1.0-SNAPSHOT",
+                projectVersion,
                 "",
                 "jar"
         );
@@ -204,7 +205,7 @@ public class WarBuddyMojo extends WarMojo {
         Artifact clusterArtifact = artifactFactory.createArtifact(
                 "it.thomasjohansen.warbuddy",
                 "saml-web-fragment",
-                "1.0-SNAPSHOT",
+                projectVersion,
                 "",
                 "jar"
         );

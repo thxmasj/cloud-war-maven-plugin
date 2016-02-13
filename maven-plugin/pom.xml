@@ -11,7 +11,7 @@
     <parent>
         <groupId>it.thomasjohansen.warbuddy</groupId>
         <artifactId>war-buddy</artifactId>
-        <version>1.0-SNAPSHOT</version>
+        <version>1.0-RC1</version>
     </parent>
 
     <build>
