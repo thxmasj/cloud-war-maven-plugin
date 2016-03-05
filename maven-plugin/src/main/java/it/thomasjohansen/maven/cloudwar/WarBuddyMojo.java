@@ -11,6 +11,7 @@ import org.apache.maven.artifact.resolver.ArtifactResolver;
 import org.apache.maven.artifact.resolver.filter.ScopeArtifactFilter;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
+import org.apache.maven.plugin.descriptor.PluginDescriptor;
 import org.apache.maven.plugin.war.WarMojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.project.MavenProject;
@@ -22,6 +23,7 @@ import org.codehaus.plexus.archiver.jar.Manifest;
 import org.codehaus.plexus.archiver.jar.ManifestException;
 import org.codehaus.plexus.archiver.manager.ArchiverManager;
 import org.codehaus.plexus.archiver.manager.NoSuchArchiverException;
+import org.codehaus.plexus.component.repository.ComponentDependency;
 
 import javax.inject.Inject;
 import java.io.File;
@@ -38,8 +40,10 @@ import java.util.Set;
  */
 public class WarBuddyMojo extends WarMojo {
 
-    private static final String projectVersion = "1.0-RC1";
     public enum Engine {tomcat, jetty}
+
+    @Inject
+    private MavenProject mavenProject;
 
     @Inject
     private ArchiverManager archiverManager;
@@ -106,40 +110,25 @@ public class WarBuddyMojo extends WarMojo {
     }
 
     private void addClusterSessionFragment(File root) throws MojoExecutionException, IOException {
-        Path targetDir = Paths.get(root.getPath(), "WEB-INF", "lib");
-        if (!targetDir.toFile().exists())
-            Files.createDirectories(targetDir);
-        try {
-            for (Artifact artifact : findClusterArtifacts()) {
-                Path source = Paths.get(artifact.getFile().getPath());
-                Path target = Paths.get(targetDir.toString(), artifact.getFile().getName());
-                Files.copy(
-                        source,
-                        target,
-                        StandardCopyOption.REPLACE_EXISTING
-                );
-            }
-        } catch (ProjectBuildingException|InvalidDependencyVersionException e) {
-            throw new MojoExecutionException("Failed to add fragment", e);
-        }
+        addFragment(root, findClusterArtifacts());
     }
 
     private void addSingleSignOnFragment(File root) throws MojoExecutionException, IOException {
+        addFragment(root, findSingleSignOnArtifacts());
+    }
+
+    private void addFragment(File root, Set<Artifact> artifacts) throws IOException {
         Path targetDir = Paths.get(root.getPath(), "WEB-INF", "lib");
         if (!targetDir.toFile().exists())
             Files.createDirectories(targetDir);
-        try {
-            for (Artifact artifact : findSingleSignOnArtifacts()) {
-                Path source = Paths.get(artifact.getFile().getPath());
-                Path target = Paths.get(targetDir.toString(), artifact.getFile().getName());
-                Files.copy(
-                        source,
-                        target,
-                        StandardCopyOption.REPLACE_EXISTING
-                );
-            }
-        } catch (ProjectBuildingException|InvalidDependencyVersionException e) {
-            throw new MojoExecutionException("Failed to add fragment", e);
+        for (Artifact artifact : artifacts) {
+            Path source = Paths.get(artifact.getFile().getPath());
+            Path target = Paths.get(targetDir.toString(), artifact.getFile().getName());
+            Files.copy(
+                    source,
+                    target,
+                    StandardCopyOption.REPLACE_EXISTING
+            );
         }
     }
 
@@ -180,55 +169,47 @@ public class WarBuddyMojo extends WarMojo {
     }
 
     private Set<Artifact> findEngineArtifacts() throws MojoExecutionException {
+        return findDependencies(engine + "-launcher");
+    }
+
+    private Set<Artifact> findClusterArtifacts() throws MojoExecutionException {
+        return findDependencies("cluster-support");
+    }
+
+    private Set<Artifact> findSingleSignOnArtifacts() throws MojoExecutionException {
+        return findDependencies("saml-web-fragment");
+    }
+
+    private Set<Artifact> findDependencies(String artifactId) throws MojoExecutionException {
+        PluginDescriptor pluginDescriptor = (PluginDescriptor)getPluginContext().get("pluginDescriptor");
+        ComponentDependency launcherDependency = ((List<ComponentDependency>)pluginDescriptor.getDependencies()).stream()
+                .filter(d -> d.getArtifactId().equals(artifactId)).findFirst().get();
         Artifact launcherArtifact = artifactFactory.createArtifact(
-                "it.thomasjohansen.weblauncher",
-                engine + "-launcher",
-                "1.0-RC1",
+                launcherDependency.getGroupId(),
+                launcherDependency.getArtifactId(),
+                launcherDependency.getVersion(),
                 "",
                 "jar"
         );
         return findArtifacts(launcherArtifact);
     }
 
-    private Set<Artifact> findClusterArtifacts() throws ProjectBuildingException, InvalidDependencyVersionException, MojoExecutionException {
-        Artifact clusterArtifact = artifactFactory.createArtifact(
-                "it.thomasjohansen.warbuddy",
-                "cluster-support",
-                projectVersion,
-                "",
-                "jar"
-        );
-        return findArtifacts(clusterArtifact);
-    }
-
-    private Set<Artifact> findSingleSignOnArtifacts() throws ProjectBuildingException, InvalidDependencyVersionException, MojoExecutionException {
-        Artifact clusterArtifact = artifactFactory.createArtifact(
-                "it.thomasjohansen.warbuddy",
-                "saml-web-fragment",
-                projectVersion,
-                "",
-                "jar"
-        );
-        return findArtifacts(clusterArtifact);
-    }
-
     private Set<Artifact> findArtifacts(Artifact mainArtifact) throws MojoExecutionException {
-        MavenProject project;
-        Set<Artifact> artifacts;
         try {
-            project = mavenProjectBuilder.buildFromRepository(mainArtifact, remoteRepositories, localRepository);
-            artifacts = project.createArtifacts(
+            MavenProject project = mavenProjectBuilder.buildFromRepository(mainArtifact, remoteRepositories, localRepository);
+            @SuppressWarnings("unchecked")
+            Set<Artifact> artifacts = project.createArtifacts(
                     artifactFactory,
                     null, // inheritedScope
                     new ScopeArtifactFilter(DefaultArtifact.SCOPE_RUNTIME)
             );
+            artifacts.add(mainArtifact);
+            for (Artifact artifact : artifacts)
+                resolveArtifact(artifact);
+            return artifacts;
         } catch (ProjectBuildingException|InvalidDependencyVersionException e) {
             throw new MojoExecutionException("Failed to find artifacts", e);
         }
-        artifacts.add(mainArtifact);
-        for (Artifact artifact : artifacts)
-            resolveArtifact(artifact);
-        return artifacts;
     }
 
     private void resolveArtifact(Artifact artifact) throws MojoExecutionException {

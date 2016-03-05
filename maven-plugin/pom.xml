@@ -7,17 +7,38 @@
     <artifactId>war-buddy-maven-plugin</artifactId>
     <packaging>maven-plugin</packaging>
     <name>WAR Buddy Maven plug-in</name>
+    <description>Maven plug-in for creating buddy wars</description>
 
     <parent>
         <groupId>it.thomasjohansen.warbuddy</groupId>
         <artifactId>war-buddy</artifactId>
-        <version>1.0-RC1</version>
+        <version>1.0-SNAPSHOT</version>
     </parent>
 
     <build>
         <plugins>
             <plugin>
                 <artifactId>maven-compiler-plugin</artifactId>
+                <configuration>
+                    <source>1.8</source>
+                    <target>1.8</target>
+                </configuration>
+            </plugin>
+            <plugin>
+                <artifactId>maven-plugin-plugin</artifactId>
+                <version>3.4</version>
+                <executions>
+                    <execution>
+                        <id>default-descriptor</id>
+                        <phase>process-classes</phase>
+                    </execution>
+                    <execution>
+                        <id>help-goal</id>
+                        <goals>
+                            <goal>helpmojo</goal>
+                        </goals>
+                    </execution>
+                </executions>
             </plugin>
         </plugins>
     </build>
@@ -26,7 +47,29 @@
         <dependency>
             <groupId>it.thomasjohansen.weblauncher</groupId>
             <artifactId>web-launcher-common</artifactId>
-            <version>1.0-RC1</version>
+            <version>1.0-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>it.thomasjohansen.weblauncher</groupId>
+            <artifactId>tomcat-launcher</artifactId>
+            <version>1.0-SNAPSHOT</version>
+            <scope>runtime</scope>
+        </dependency>
+        <dependency>
+            <groupId>it.thomasjohansen.weblauncher</groupId>
+            <artifactId>jetty-launcher</artifactId>
+            <version>1.0-SNAPSHOT</version>
+            <scope>runtime</scope>
+        </dependency>
+        <dependency>
+            <groupId>it.thomasjohansen.warbuddy</groupId>
+            <artifactId>cluster-support</artifactId>
+            <version>1.0-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>it.thomasjohansen.warbuddy</groupId>
+            <artifactId>saml-support</artifactId>
+            <version>1.0-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>org.apache.maven.plugins</groupId>
